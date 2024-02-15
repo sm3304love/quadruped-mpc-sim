@@ -1,0 +1,5 @@
+<launch>
+    <rosparam file="$(find a1_control)/config/gazebo_a1_mpc.yaml" command="load"/>
+
+    <node pkg="a1_control" type="main" name="main" output="screen"/>
+</launch>
