@@ -1,11 +1,9 @@
-//
-// Created by zixin on 11/1/21.
-//
 
 #include "a1_control/ROSInterface.h"
 
 // constructor
-QuadrupedROS::QuadrupedROS(ros::NodeHandle &_nh) {
+QuadrupedROS::QuadrupedROS(ros::NodeHandle &_nh)
+{
     nh = _nh;
 
     // ROS publisher
@@ -33,26 +31,42 @@ QuadrupedROS::QuadrupedROS(ros::NodeHandle &_nh) {
     // ROS register callback, call backs directly modify variables in A1CtrlStates
     sub_imu_msg = nh.subscribe("/trunk_imu", 100, &QuadrupedROS::imu_callback, this);
 
-    sub_joint_msg[0] = nh.subscribe("/a1_gazebo/FL_hip_controller/state", 2, &QuadrupedROS::FL_hip_state_callback, this);
-    sub_joint_msg[1] = nh.subscribe("/a1_gazebo/FL_thigh_controller/state", 2, &QuadrupedROS::FL_thigh_state_callback, this);
-    sub_joint_msg[2] = nh.subscribe("/a1_gazebo/FL_calf_controller/state", 2, &QuadrupedROS::FL_calf_state_callback, this);
+    sub_joint_msg[0] =
+        nh.subscribe("/a1_gazebo/FL_hip_controller/state", 2, &QuadrupedROS::FL_hip_state_callback, this);
+    sub_joint_msg[1] =
+        nh.subscribe("/a1_gazebo/FL_thigh_controller/state", 2, &QuadrupedROS::FL_thigh_state_callback, this);
+    sub_joint_msg[2] =
+        nh.subscribe("/a1_gazebo/FL_calf_controller/state", 2, &QuadrupedROS::FL_calf_state_callback, this);
 
-    sub_joint_msg[3] = nh.subscribe("/a1_gazebo/FR_hip_controller/state", 2, &QuadrupedROS::FR_hip_state_callback, this);
-    sub_joint_msg[4] = nh.subscribe("/a1_gazebo/FR_thigh_controller/state", 2, &QuadrupedROS::FR_thigh_state_callback, this);
-    sub_joint_msg[5] = nh.subscribe("/a1_gazebo/FR_calf_controller/state", 2, &QuadrupedROS::FR_calf_state_callback, this);
+    sub_joint_msg[3] =
+        nh.subscribe("/a1_gazebo/FR_hip_controller/state", 2, &QuadrupedROS::FR_hip_state_callback, this);
+    sub_joint_msg[4] =
+        nh.subscribe("/a1_gazebo/FR_thigh_controller/state", 2, &QuadrupedROS::FR_thigh_state_callback, this);
+    sub_joint_msg[5] =
+        nh.subscribe("/a1_gazebo/FR_calf_controller/state", 2, &QuadrupedROS::FR_calf_state_callback, this);
 
-    sub_joint_msg[6] = nh.subscribe("/a1_gazebo/RL_hip_controller/state", 2, &QuadrupedROS::RL_hip_state_callback, this);
-    sub_joint_msg[7] = nh.subscribe("/a1_gazebo/RL_thigh_controller/state", 2, &QuadrupedROS::RL_thigh_state_callback, this);
-    sub_joint_msg[8] = nh.subscribe("/a1_gazebo/RL_calf_controller/state", 2, &QuadrupedROS::RL_calf_state_callback, this);
+    sub_joint_msg[6] =
+        nh.subscribe("/a1_gazebo/RL_hip_controller/state", 2, &QuadrupedROS::RL_hip_state_callback, this);
+    sub_joint_msg[7] =
+        nh.subscribe("/a1_gazebo/RL_thigh_controller/state", 2, &QuadrupedROS::RL_thigh_state_callback, this);
+    sub_joint_msg[8] =
+        nh.subscribe("/a1_gazebo/RL_calf_controller/state", 2, &QuadrupedROS::RL_calf_state_callback, this);
 
-    sub_joint_msg[9] = nh.subscribe("/a1_gazebo/RR_hip_controller/state", 2, &QuadrupedROS::RR_hip_state_callback, this);
-    sub_joint_msg[10] = nh.subscribe("/a1_gazebo/RR_thigh_controller/state", 2, &QuadrupedROS::RR_thigh_state_callback, this);
-    sub_joint_msg[11] = nh.subscribe("/a1_gazebo/RR_calf_controller/state", 2, &QuadrupedROS::RR_calf_state_callback, this);
+    sub_joint_msg[9] =
+        nh.subscribe("/a1_gazebo/RR_hip_controller/state", 2, &QuadrupedROS::RR_hip_state_callback, this);
+    sub_joint_msg[10] =
+        nh.subscribe("/a1_gazebo/RR_thigh_controller/state", 2, &QuadrupedROS::RR_thigh_state_callback, this);
+    sub_joint_msg[11] =
+        nh.subscribe("/a1_gazebo/RR_calf_controller/state", 2, &QuadrupedROS::RR_calf_state_callback, this);
 
-    sub_foot_contact_msg[0] = nh.subscribe("/visual/FL_foot_contact/the_force", 2, &QuadrupedROS::FL_foot_contact_callback, this);
-    sub_foot_contact_msg[1] = nh.subscribe("/visual/FR_foot_contact/the_force", 2, &QuadrupedROS::FR_foot_contact_callback, this);
-    sub_foot_contact_msg[2] = nh.subscribe("/visual/RL_foot_contact/the_force", 2, &QuadrupedROS::RL_foot_contact_callback, this);
-    sub_foot_contact_msg[3] = nh.subscribe("/visual/RR_foot_contact/the_force", 2, &QuadrupedROS::RR_foot_contact_callback, this);
+    sub_foot_contact_msg[0] =
+        nh.subscribe("/visual/FL_foot_contact/the_force", 2, &QuadrupedROS::FL_foot_contact_callback, this);
+    sub_foot_contact_msg[1] =
+        nh.subscribe("/visual/FR_foot_contact/the_force", 2, &QuadrupedROS::FR_foot_contact_callback, this);
+    sub_foot_contact_msg[2] =
+        nh.subscribe("/visual/RL_foot_contact/the_force", 2, &QuadrupedROS::RL_foot_contact_callback, this);
+    sub_foot_contact_msg[3] =
+        nh.subscribe("/visual/RR_foot_contact/the_force", 2, &QuadrupedROS::RR_foot_contact_callback, this);
 
     // sub_joy_msg = nh.subscribe("/joy", 1000, &QuadrupedROS::joy_callback, this);
     sub_robot_cmd_msg = nh.subscribe("/a1_robot_cmd", 1000, &QuadrupedROS::Robot_command_callback, this);
@@ -66,7 +80,6 @@ QuadrupedROS::QuadrupedROS(ros::NodeHandle &_nh) {
     // body_to_a1_body
     p_br = Eigen::Vector3d(-0.2293, 0.0, -0.067);
     R_br = Eigen::Matrix3d::Identity();
-
 
     acc_x = MovingWindowFilter(5);
     acc_y = MovingWindowFilter(5);
@@ -93,41 +106,42 @@ QuadrupedROS::QuadrupedROS(ros::NodeHandle &_nh) {
     robot_state.root_euler_d[2] = 0.0;
     robot_state.root_pos_d[2] = 0.0;
 
-    if (!kdl_parser::treeFromParam("robot_description", robot_state.tree)) 
+    if (!kdl_parser::treeFromParam("robot_description", robot_state.tree))
     {
         ROS_ERROR("Failed to construct kdl tree");
     }
 
     // KDL::Chain chain;
-    if (!robot_state.tree.getChain(robot_state.base_link, robot_state.fl_foot_link, robot_state.fl_chain)) 
+    if (!robot_state.tree.getChain(robot_state.base_link, robot_state.fl_foot_link, robot_state.fl_chain))
     {
         ROS_ERROR("Failed to get chain from tree");
     }
 
-    if (!robot_state.tree.getChain(robot_state.base_link, robot_state.fr_foot_link, robot_state.fr_chain)) 
+    if (!robot_state.tree.getChain(robot_state.base_link, robot_state.fr_foot_link, robot_state.fr_chain))
     {
         ROS_ERROR("Failed to get chain from tree");
     }
 
-    if (!robot_state.tree.getChain(robot_state.base_link, robot_state.rl_foot_link, robot_state.rl_chain)) 
+    if (!robot_state.tree.getChain(robot_state.base_link, robot_state.rl_foot_link, robot_state.rl_chain))
     {
         ROS_ERROR("Failed to get chain from tree");
     }
 
-    if (!robot_state.tree.getChain(robot_state.base_link, robot_state.rr_foot_link, robot_state.rr_chain)) 
+    if (!robot_state.tree.getChain(robot_state.base_link, robot_state.rr_foot_link, robot_state.rr_chain))
     {
         ROS_ERROR("Failed to get chain from tree");
     }
-
 }
 
-bool QuadrupedROS::update_foot_forces_grf(double dt) {
+bool QuadrupedROS::update_foot_forces_grf(double dt)
+{
 
     robot_state.foot_forces_grf = _root_control.compute_grf(robot_state, dt);
     return true;
 }
 
-bool QuadrupedROS::main_update(double t, double dt) {
+bool QuadrupedROS::main_update(double t, double dt)
+{
 
     robot_state.root_lin_vel_d[0] = cmd_velx;
     robot_state.root_lin_vel_d[1] = cmd_vely;
@@ -135,10 +149,12 @@ bool QuadrupedROS::main_update(double t, double dt) {
 
     cmd_body_height += cmd_velz * dt;
 
-    if (cmd_body_height >= BODY_HEIGHT_MAX) {
+    if (cmd_body_height >= BODY_HEIGHT_MAX)
+    {
         cmd_body_height = BODY_HEIGHT_MAX;
     }
-    if (cmd_body_height <= BODY_HEIGHT_MIN) {
+    if (cmd_body_height <= BODY_HEIGHT_MIN)
+    {
         cmd_body_height = BODY_HEIGHT_MIN;
     }
 
@@ -150,32 +166,41 @@ bool QuadrupedROS::main_update(double t, double dt) {
     robot_state.root_euler_d[1] += cmd_pitch_vel * dt;
     robot_state.root_euler_d[2] += cmd_yaw_vel * dt;
     robot_state.root_pos_d[2] = cmd_body_height;
- 
+
     prev_robot_ctrl_state = robot_ctrl_state;
 
-
     // determine movement mode
-    if (robot_ctrl_state == 1) {
+    if (robot_ctrl_state == 1)
+    {
         // walking mode, in this mode the robot should execute gait
         robot_state.movement_mode = 1;
-    } else if (robot_ctrl_state == 0 && prev_robot_ctrl_state == 1) {
+    }
+    else if (robot_ctrl_state == 0 && prev_robot_ctrl_state == 1)
+    {
         // leave walking mode
         // lock current position -- for stay current position
         robot_state.movement_mode = 0;
         robot_state.root_pos_d.segment<2>(0) = robot_state.root_pos.segment<2>(0);
         robot_state.kp_linear(0) = robot_state.kp_linear_lock_x;
         robot_state.kp_linear(1) = robot_state.kp_linear_lock_y;
-    } else {
+    }
+    else
+    {
         robot_state.movement_mode = 0;
     }
 
     // in walking mode, do position locking if no root_lin_vel_d, otherwise do not lock position
-    if (robot_state.movement_mode == 1) {
-        if (robot_state.root_lin_vel_d.segment<2>(0).norm() > 0.05) {
-            // has nonzero velocity, keep refreshing position target, but just xy --> 속도 제어 기반이라서 위치값이 계속 바뀌는데, 그곳을 desired로 만들기
+    if (robot_state.movement_mode == 1)
+    {
+        if (robot_state.root_lin_vel_d.segment<2>(0).norm() > 0.05)
+        {
+            // has nonzero velocity, keep refreshing position target, but just xy --> 속도 제어 기반이라서 위치값이 계속
+            // 바뀌는데, 그곳을 desired로 만들기
             robot_state.root_pos_d.segment<2>(0) = robot_state.root_pos.segment<2>(0);
             robot_state.kp_linear.segment<2>(0).setZero();
-        } else {
+        }
+        else
+        {
             robot_state.kp_linear(0) = robot_state.kp_linear_lock_x;
             robot_state.kp_linear(1) = robot_state.kp_linear_lock_y;
         }
@@ -185,14 +210,14 @@ bool QuadrupedROS::main_update(double t, double dt) {
     _root_control.generate_swing_legs_ctrl(robot_state, dt);
 
     // state estimation
-    if (!robot_pos_estimate.is_inited()) {
+    if (!robot_pos_estimate.is_inited())
+    {
         robot_pos_estimate.init_state(robot_state);
-    } else {
+    }
+    else
+    {
         robot_pos_estimate.update_estimation(robot_state, dt);
     }
-
-    
-
 
     nav_msgs::Odometry estimate_odom;
     estimate_odom.pose.pose.position.x = robot_state.estimated_root_pos(0);
@@ -209,13 +234,15 @@ bool QuadrupedROS::main_update(double t, double dt) {
     return true;
 }
 
-bool QuadrupedROS::send_cmd() {
+bool QuadrupedROS::send_cmd()
+{
     _root_control.compute_joint_torques(robot_state);
 
     // send control cmd to robot via ros topic
     unitree_legged_msgs::LowCmd low_cmd;
 
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 12; i++)
+    {
         low_cmd.motorCmd[i].mode = 0x0A;
         low_cmd.motorCmd[i].q = 0;
         low_cmd.motorCmd[i].dq = 0;
@@ -228,25 +255,20 @@ bool QuadrupedROS::send_cmd() {
     return true;
 }
 
-void QuadrupedROS::imu_callback(const sensor_msgs::Imu::ConstPtr &imu) 
+void QuadrupedROS::imu_callback(const sensor_msgs::Imu::ConstPtr &imu)
 {
-    robot_state.root_quat = Eigen::Quaterniond(quat_w.CalculateAverage(imu->orientation.w),
-                                                  quat_x.CalculateAverage(imu->orientation.x),
-                                                  quat_y.CalculateAverage(imu->orientation.y),
-                                                  quat_z.CalculateAverage(imu->orientation.z));
+    robot_state.root_quat =
+        Eigen::Quaterniond(quat_w.CalculateAverage(imu->orientation.w), quat_x.CalculateAverage(imu->orientation.x),
+                           quat_y.CalculateAverage(imu->orientation.y), quat_z.CalculateAverage(imu->orientation.z));
 
     robot_state.root_rot_mat = robot_state.root_quat.toRotationMatrix();
 
-    robot_state.imu_acc = Eigen::Vector3d(
-            acc_x.CalculateAverage(imu->linear_acceleration.x),
-            acc_y.CalculateAverage(imu->linear_acceleration.y),
-            acc_z.CalculateAverage(imu->linear_acceleration.z)
-    );
-    robot_state.imu_ang_vel = Eigen::Vector3d(
-            gyro_x.CalculateAverage(imu->angular_velocity.x),
-            gyro_y.CalculateAverage(imu->angular_velocity.y),
-            gyro_z.CalculateAverage(imu->angular_velocity.z)
-    );
+    robot_state.imu_acc = Eigen::Vector3d(acc_x.CalculateAverage(imu->linear_acceleration.x),
+                                          acc_y.CalculateAverage(imu->linear_acceleration.y),
+                                          acc_z.CalculateAverage(imu->linear_acceleration.z));
+    robot_state.imu_ang_vel = Eigen::Vector3d(gyro_x.CalculateAverage(imu->angular_velocity.x),
+                                              gyro_y.CalculateAverage(imu->angular_velocity.y),
+                                              gyro_z.CalculateAverage(imu->angular_velocity.z));
     robot_state.root_ang_vel = robot_state.root_rot_mat * robot_state.imu_ang_vel;
 
     robot_state.root_euler = Utils::quat_to_euler(robot_state.root_quat);
@@ -270,7 +292,6 @@ void QuadrupedROS::imu_callback(const sensor_msgs::Imu::ConstPtr &imu)
     KDL::JntArray dq_fr(NUM_DOF_PER_LEG);
     KDL::JntArray dq_rl(NUM_DOF_PER_LEG);
     KDL::JntArray dq_rr(NUM_DOF_PER_LEG);
-
 
     q_fl(0) = robot_state.joint_pos[0];
     q_fl(1) = robot_state.joint_pos[1];
@@ -354,48 +375,47 @@ void QuadrupedROS::imu_callback(const sensor_msgs::Imu::ConstPtr &imu)
     rl_dyn_param.JntToCoriolis(q_rl, dq_rl, rl_coriolis_torques);
     KDL::JntArray rr_coriolis_torques(3);
     rr_dyn_param.JntToCoriolis(q_rr, dq_rr, rr_coriolis_torques);
-    
+
     // Kdl
 
     robot_state.torques_gravity << fl_gravity_torques(0), fl_gravity_torques(1), fl_gravity_torques(2),
-            fr_gravity_torques(0), fr_gravity_torques(1), fr_gravity_torques(2),
-            rl_gravity_torques(0), rl_gravity_torques(1), rl_gravity_torques(2),
-            rr_gravity_torques(0), rr_gravity_torques(1), rr_gravity_torques(2);
+        fr_gravity_torques(0), fr_gravity_torques(1), fr_gravity_torques(2), rl_gravity_torques(0),
+        rl_gravity_torques(1), rl_gravity_torques(2), rr_gravity_torques(0), rr_gravity_torques(1),
+        rr_gravity_torques(2);
 
     robot_state.Coriolis_torques << fl_coriolis_torques(0), fl_coriolis_torques(1), fl_coriolis_torques(2),
-            fr_coriolis_torques(0), fr_coriolis_torques(1), fr_coriolis_torques(2),
-            rl_coriolis_torques(0), rl_coriolis_torques(1), rl_coriolis_torques(2),
-            rr_coriolis_torques(0), rr_coriolis_torques(1), rr_coriolis_torques(2);
-
+        fr_coriolis_torques(0), fr_coriolis_torques(1), fr_coriolis_torques(2), rl_coriolis_torques(0),
+        rl_coriolis_torques(1), rl_coriolis_torques(2), rr_coriolis_torques(0), rr_coriolis_torques(1),
+        rr_coriolis_torques(2);
 
     Eigen::Matrix3d jacobian_fl;
-    for (int i = 0; i < 3; ++i) 
+    for (int i = 0; i < 3; ++i)
     {
-        for (int j = 0; j < 3; ++j) 
+        for (int j = 0; j < 3; ++j)
         {
             jacobian_fl(i, j) = fl_foot_jacobian_kdl(i, j);
         }
     }
     Eigen::Matrix3d jacobian_fr;
-    for (int i = 0; i < 3; ++i) 
+    for (int i = 0; i < 3; ++i)
     {
-        for (int j = 0; j < 3; ++j) 
+        for (int j = 0; j < 3; ++j)
         {
             jacobian_fr(i, j) = fr_foot_jacobian_kdl(i, j);
         }
     }
     Eigen::Matrix3d jacobian_rl;
-    for (int i = 0; i < 3; ++i) 
+    for (int i = 0; i < 3; ++i)
     {
-        for (int j = 0; j < 3; ++j) 
+        for (int j = 0; j < 3; ++j)
         {
             jacobian_rl(i, j) = rl_foot_jacobian_kdl(i, j);
         }
     }
     Eigen::Matrix3d jacobian_rr;
-    for (int i = 0; i < 3; ++i) 
+    for (int i = 0; i < 3; ++i)
     {
-        for (int j = 0; j < 3; ++j) 
+        for (int j = 0; j < 3; ++j)
         {
             jacobian_rr(i, j) = rr_foot_jacobian_kdl(i, j);
         }
@@ -411,130 +431,149 @@ void QuadrupedROS::imu_callback(const sensor_msgs::Imu::ConstPtr &imu)
     robot_state.j_foot.block<3, 3>(3 * 2, 3 * 2) = jacobian_rl;
     robot_state.j_foot.block<3, 3>(3 * 3, 3 * 3) = jacobian_rr;
 
-    for (int i = 0; i < NUM_LEG; ++i) 
+    for (int i = 0; i < NUM_LEG; ++i)
     {
         Eigen::Matrix3d tmp_mtx = robot_state.j_foot.block<3, 3>(3 * i, 3 * i);
         Eigen::Vector3d tmp_vec = robot_state.joint_vel.segment<3>(3 * i);
         robot_state.foot_vel_rel.block<3, 1>(0, i) = tmp_mtx * tmp_vec;
 
-        robot_state.foot_pos_abs.block<3, 1>(0, i) = robot_state.root_rot_mat * robot_state.foot_pos_rel.block<3, 1>(0, i);
-        robot_state.foot_vel_abs.block<3, 1>(0, i) = robot_state.root_rot_mat * robot_state.foot_vel_rel.block<3, 1>(0, i);
+        robot_state.foot_pos_abs.block<3, 1>(0, i) =
+            robot_state.root_rot_mat * robot_state.foot_pos_rel.block<3, 1>(0, i);
+        robot_state.foot_vel_abs.block<3, 1>(0, i) =
+            robot_state.root_rot_mat * robot_state.foot_vel_rel.block<3, 1>(0, i);
 
-        robot_state.foot_pos_world.block<3, 1>(0, i) = robot_state.foot_pos_abs.block<3, 1>(0, i) + robot_state.root_pos;
-        robot_state.foot_vel_world.block<3, 1>(0, i) = robot_state.foot_vel_abs.block<3, 1>(0, i) + robot_state.root_lin_vel;
+        robot_state.foot_pos_world.block<3, 1>(0, i) =
+            robot_state.foot_pos_abs.block<3, 1>(0, i) + robot_state.root_pos;
+        robot_state.foot_vel_world.block<3, 1>(0, i) =
+            robot_state.foot_vel_abs.block<3, 1>(0, i) + robot_state.root_lin_vel;
     }
 }
 
 // FL
-void QuadrupedROS::FL_hip_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::FL_hip_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[0] = a1_joint_state.q;
     robot_state.joint_vel[0] = a1_joint_state.dq;
 }
 
-void QuadrupedROS::FL_thigh_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::FL_thigh_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[1] = a1_joint_state.q;
     robot_state.joint_vel[1] = a1_joint_state.dq;
 }
 
-void QuadrupedROS::FL_calf_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::FL_calf_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[2] = a1_joint_state.q;
     robot_state.joint_vel[2] = a1_joint_state.dq;
 }
 
 // FR
-void QuadrupedROS::FR_hip_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::FR_hip_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[3] = a1_joint_state.q;
     robot_state.joint_vel[3] = a1_joint_state.dq;
 }
 
-void QuadrupedROS::FR_thigh_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::FR_thigh_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[4] = a1_joint_state.q;
     robot_state.joint_vel[4] = a1_joint_state.dq;
 }
 
-void QuadrupedROS::FR_calf_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::FR_calf_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[5] = a1_joint_state.q;
     robot_state.joint_vel[5] = a1_joint_state.dq;
 }
 
 // RL
-void QuadrupedROS::RL_hip_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::RL_hip_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[6] = a1_joint_state.q;
     robot_state.joint_vel[6] = a1_joint_state.dq;
 }
 
-void QuadrupedROS::RL_thigh_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::RL_thigh_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[7] = a1_joint_state.q;
     robot_state.joint_vel[7] = a1_joint_state.dq;
 }
 
-void QuadrupedROS::RL_calf_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::RL_calf_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[8] = a1_joint_state.q;
     robot_state.joint_vel[8] = a1_joint_state.dq;
 }
 
 // RR
-void QuadrupedROS::RR_hip_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::RR_hip_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[9] = a1_joint_state.q;
     robot_state.joint_vel[9] = a1_joint_state.dq;
 }
 
-void QuadrupedROS::RR_thigh_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::RR_thigh_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[10] = a1_joint_state.q;
     robot_state.joint_vel[10] = a1_joint_state.dq;
 }
 
-void QuadrupedROS::RR_calf_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state) {
+void QuadrupedROS::RR_calf_state_callback(const unitree_legged_msgs::MotorState &a1_joint_state)
+{
     robot_state.joint_pos[11] = a1_joint_state.q;
     robot_state.joint_vel[11] = a1_joint_state.dq;
 }
 
 // foot contact force
-void QuadrupedROS::FL_foot_contact_callback(const geometry_msgs::WrenchStamped &force) {
+void QuadrupedROS::FL_foot_contact_callback(const geometry_msgs::WrenchStamped &force)
+{
     robot_state.foot_force[0] = force.wrench.force.z;
 }
 
-void QuadrupedROS::FR_foot_contact_callback(const geometry_msgs::WrenchStamped &force) {
+void QuadrupedROS::FR_foot_contact_callback(const geometry_msgs::WrenchStamped &force)
+{
     robot_state.foot_force[1] = force.wrench.force.z;
 }
 
-void QuadrupedROS::RL_foot_contact_callback(const geometry_msgs::WrenchStamped &force) {
+void QuadrupedROS::RL_foot_contact_callback(const geometry_msgs::WrenchStamped &force)
+{
     robot_state.foot_force[2] = force.wrench.force.z;
 }
 
-void QuadrupedROS::RR_foot_contact_callback(const geometry_msgs::WrenchStamped &force) {
+void QuadrupedROS::RR_foot_contact_callback(const geometry_msgs::WrenchStamped &force)
+{
     robot_state.foot_force[3] = force.wrench.force.z;
 }
 
-
 void QuadrupedROS::Robot_command_callback(const unitree_legged_msgs::RobotCmd::ConstPtr &cmd_msg)
 {
-    if(cmd_msg->vel_x >= CMD_VELX_MAX)
+    if (cmd_msg->vel_x >= CMD_VELX_MAX)
         cmd_velx = CMD_VELX_MAX;
     else
         cmd_velx = cmd_msg->vel_x;
 
-    if(cmd_msg->vel_y >= CMD_VELY_MAX)
+    if (cmd_msg->vel_y >= CMD_VELY_MAX)
         cmd_vely = CMD_VELY_MAX;
     else
         cmd_vely = cmd_msg->vel_y;
 
-    if(cmd_msg->vel_z >= CMD_BODY_HEIGHT_VEL)
+    if (cmd_msg->vel_z >= CMD_BODY_HEIGHT_VEL)
         cmd_velz = CMD_BODY_HEIGHT_VEL;
     else
         cmd_velz = cmd_msg->vel_z;
 
-    if(cmd_msg->angular_vel_roll >= CMD_ROLL_MAX)
+    if (cmd_msg->angular_vel_roll >= CMD_ROLL_MAX)
         cmd_roll_vel = CMD_ROLL_MAX;
     else
         cmd_roll_vel = cmd_msg->angular_vel_roll;
 
-    if(cmd_msg->angular_vel_pitch >= CMD_PITCH_MAX)
+    if (cmd_msg->angular_vel_pitch >= CMD_PITCH_MAX)
         cmd_pitch_vel = CMD_PITCH_MAX;
     else
         cmd_pitch_vel = cmd_msg->angular_vel_pitch;
-    
-    if(cmd_msg->angular_vel_yaw >= CMD_YAW_MAX)
+
+    if (cmd_msg->angular_vel_yaw >= CMD_YAW_MAX)
         cmd_yaw_vel = CMD_YAW_MAX;
     else
         cmd_yaw_vel = cmd_msg->angular_vel_yaw;
@@ -544,7 +583,7 @@ void QuadrupedROS::Robot_command_callback(const unitree_legged_msgs::RobotCmd::C
     // robot_state.root_lin_vel_d[2] = cmd_msg->Twist.linear.z;
 
     // // root_ang_vel_d is in robot frame
-    // robot_state.root_ang_vel_d[0] = cmd_msg->Twist.angular.x;   
+    // robot_state.root_ang_vel_d[0] = cmd_msg->Twist.angular.x;
     // robot_state.root_ang_vel_d[1] = cmd_msg->Twist.angular.y;
     // robot_state.root_ang_vel_d[2] = cmd_msg->Twist.angular.z;
 
@@ -564,7 +603,6 @@ void QuadrupedROS::Robot_command_callback(const unitree_legged_msgs::RobotCmd::C
     //                                  quat_x_d.CalculateAverage(cmd_msg->Pose.orientation.x),
     //                                  quat_y_d.CalculateAverage(cmd_msg->Pose.orientation.y),
     //                                  quat_z_d.CalculateAverage(cmd_msg->Pose.orientation.z));
-
 
     // Eigen::Vector3d root_euler_cmd = Utils::quat_to_euler(root_quat_d);
 

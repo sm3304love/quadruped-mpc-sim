@@ -2,19 +2,19 @@
 #define A1_params_H
 
 // control time related
-//#define CTRL_FREQUENCY 2.5  // ms
-#define GRF_UPDATE_FREQUENCY 2.5 // ms
-#define MAIN_UPDATE_FREQUENCY 2.5 // ms
-#define HARDWARE_FEEDBACK_FREQUENCY 2.5  // ms
+// #define CTRL_FREQUENCY 2.5  // ms
+#define GRF_UPDATE_FREQUENCY 2.5        // ms
+#define MAIN_UPDATE_FREQUENCY 2.5       // ms
+#define HARDWARE_FEEDBACK_FREQUENCY 2.5 // ms
 
-#define BODY_HEIGHT_MIN  0.1 //m
-#define BODY_HEIGHT_MAX  0.32 //m
-#define CMD_BODY_HEIGHT_VEL 0.04    // m/s
+#define BODY_HEIGHT_MIN 0.1      // m
+#define BODY_HEIGHT_MAX 0.32     // m
+#define CMD_BODY_HEIGHT_VEL 0.04 // m/s
 #define CMD_VELX_MAX 0.6         // m/s
-#define CMD_VELY_MAX 0.3            // m/s
-#define CMD_YAW_MAX 0.8             // rad
-#define CMD_PITCH_MAX 0.4           // rad
-#define CMD_ROLL_MAX 0.4  
+#define CMD_VELY_MAX 0.3         // m/s
+#define CMD_YAW_MAX 0.8          // rad
+#define CMD_PITCH_MAX 0.4        // rad
+#define CMD_ROLL_MAX 0.4
 
 // mpc
 #define PLAN_HORIZON 10
@@ -41,5 +41,4 @@
 #define ERROR_CURVE_ALREADY_SET 184
 #define ERROR_CURVE_NOT_SET 185
 
-
-#endif //A1_params_H
+#endif // A1_params_H

@@ -1,28 +1,31 @@
 #ifndef A1_robots_H
 #define A1_robots_H
 
-#include <ros/ros.h>
-#include <sensor_msgs/JointState.h>
-#include <kdl_parser/kdl_parser.hpp>
-#include <kdl/tree.hpp>
-#include <kdl/chain.hpp>
-#include <kdl/chainfksolverpos_recursive.hpp>
-#include <kdl/chainjnttojacsolver.hpp>
-#include <kdl/chaindynparam.hpp>
+#include "a1_control/Params.h"
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
-#include <tf/tf.h>
 #include <eigen_conversions/eigen_kdl.h>
-#include "a1_control/Params.h"
+#include <kdl/chain.hpp>
+#include <kdl/chaindynparam.hpp>
+#include <kdl/chainfksolverpos_recursive.hpp>
+#include <kdl/chainjnttojacsolver.hpp>
+#include <kdl/tree.hpp>
+#include <kdl_parser/kdl_parser.hpp>
+#include <ros/ros.h>
+#include <sensor_msgs/JointState.h>
+#include <tf/tf.h>
 
-class RobotStates {
-public:
+class RobotStates
+{
+  public:
     // this init function sets all variables to that used in orbit.issac.a1 controller
-    RobotStates() {
+    RobotStates()
+    {
         reset();
     }
 
-    void reset() {
+    void reset()
+    {
         use_terrain_adapt = 1;
         movement_mode = 0;
         counter_per_gait = 120 * 2;
@@ -42,26 +45,15 @@ public:
         root_ang_vel_d.setZero();
 
         robot_mass = 13.74;
-        a1_trunk_inertia << 0.0158533, 0.0, 0.0,
-                0.0, 0.0377999, 0.0,
-                0.0, 0.0, 0.0456542;
+        a1_trunk_inertia << 0.0158533, 0.0, 0.0, 0.0, 0.0377999, 0.0, 0.0, 0.0, 0.0456542;
         // this initialization is matlab style
-        default_foot_pos << 0.17, 0.17, -0.17, -0.17,
-                0.15, -0.15, 0.15, -0.15,
-                -0.35, -0.35, -0.35, -0.35;
+        default_foot_pos << 0.17, 0.17, -0.17, -0.17, 0.15, -0.15, 0.15, -0.15, -0.35, -0.35, -0.35, -0.35;
 
         q_weights.resize(13);
         r_weights.resize(12);
 
-        q_weights << 80.0, 80.0, 1.0,
-                0.0, 0.0, 270.0,
-                1.0, 1.0, 20.0,
-                20.0, 20.0, 20.0,
-                0.0;
-        r_weights << 1e-5, 1e-5, 1e-6,
-                1e-5, 1e-5, 1e-6,
-                1e-5, 1e-5, 1e-6,
-                1e-5, 1e-5, 1e-6;
+        q_weights << 80.0, 80.0, 1.0, 0.0, 0.0, 270.0, 1.0, 1.0, 20.0, 20.0, 20.0, 20.0, 0.0;
+        r_weights << 1e-5, 1e-5, 1e-6, 1e-5, 1e-5, 1e-6, 1e-5, 1e-5, 1e-6, 1e-5, 1e-5, 1e-6;
 
         root_pos.setZero();
         root_quat.setIdentity();
@@ -98,7 +90,8 @@ public:
         foot_vel_rel.setZero();
         j_foot.setIdentity();
 
-        for (int i = 0; i < NUM_LEG; ++i) {
+        for (int i = 0; i < NUM_LEG; ++i)
+        {
             contacts[i] = false;
             plan_contacts[i] = false;
             early_contacts[i] = false;
@@ -114,14 +107,10 @@ public:
         double kd_foot_y = 8.0;
         double kd_foot_z = 8.0;
 
-        kp_foot <<
-                kp_foot_x, kp_foot_x, kp_foot_x, kp_foot_x,
-                kp_foot_y, kp_foot_y, kp_foot_y, kp_foot_y,
-                kp_foot_z, kp_foot_z, kp_foot_z, kp_foot_z;
-        kd_foot <<
-                kd_foot_x, kd_foot_x, kd_foot_x, kd_foot_x,
-                kd_foot_y, kd_foot_y, kd_foot_y, kd_foot_y,
-                kd_foot_z, kd_foot_z, kd_foot_z, kd_foot_z;
+        kp_foot << kp_foot_x, kp_foot_x, kp_foot_x, kp_foot_x, kp_foot_y, kp_foot_y, kp_foot_y, kp_foot_y, kp_foot_z,
+            kp_foot_z, kp_foot_z, kp_foot_z;
+        kd_foot << kd_foot_x, kd_foot_x, kd_foot_x, kd_foot_x, kd_foot_y, kd_foot_y, kd_foot_y, kd_foot_y, kd_foot_z,
+            kd_foot_z, kd_foot_z, kd_foot_z;
 
         km_foot = Eigen::Vector3d(0.1, 0.1, 0.1);
 
@@ -136,10 +125,10 @@ public:
         // power_level = 5;
     }
 
-    void resetFromROSParam(ros::NodeHandle &_nh) {
+    void resetFromROSParam(ros::NodeHandle &_nh)
+    {
         // _nh.param("stance_leg_control_type", stance_leg_control_type, 1);
         _nh.param("use_terrain_adapt", use_terrain_adapt, 1);
-        
 
         _nh.param("a1_robot_mass", robot_mass, 12.0);
 
@@ -157,9 +146,8 @@ public:
         _nh.param("a1_trunk_inertia_yy", a1_trunk_inertia_yy, 0.0377999);
         _nh.param("a1_trunk_inertia_zz", a1_trunk_inertia_zz, 0.0456542);
 
-        a1_trunk_inertia << a1_trunk_inertia_xx, a1_trunk_inertia_xy, a1_trunk_inertia_xz,
-                a1_trunk_inertia_xy, a1_trunk_inertia_yy, a1_trunk_inertia_yz,
-                a1_trunk_inertia_xz, a1_trunk_inertia_yz, a1_trunk_inertia_zz;
+        a1_trunk_inertia << a1_trunk_inertia_xx, a1_trunk_inertia_xy, a1_trunk_inertia_xz, a1_trunk_inertia_xy,
+            a1_trunk_inertia_yy, a1_trunk_inertia_yz, a1_trunk_inertia_xz, a1_trunk_inertia_yz, a1_trunk_inertia_zz;
 
         double a1_default_foot_pos_FL_x;
         double a1_default_foot_pos_FL_y;
@@ -193,11 +181,13 @@ public:
         _nh.param("a1_default_foot_pos_RR_y", a1_default_foot_pos_RR_y, -0.15);
         _nh.param("a1_default_foot_pos_RR_z", a1_default_foot_pos_RR_z, -0.35);
 
-        default_foot_pos << a1_default_foot_pos_FL_x, a1_default_foot_pos_FR_x, a1_default_foot_pos_RL_x, a1_default_foot_pos_RR_x,
-                a1_default_foot_pos_FL_y, a1_default_foot_pos_FR_y, a1_default_foot_pos_RL_y, a1_default_foot_pos_RR_y,
-                a1_default_foot_pos_FL_z, a1_default_foot_pos_FR_z, a1_default_foot_pos_RL_z, a1_default_foot_pos_RR_z;
+        default_foot_pos << a1_default_foot_pos_FL_x, a1_default_foot_pos_FR_x, a1_default_foot_pos_RL_x,
+            a1_default_foot_pos_RR_x, a1_default_foot_pos_FL_y, a1_default_foot_pos_FR_y, a1_default_foot_pos_RL_y,
+            a1_default_foot_pos_RR_y, a1_default_foot_pos_FL_z, a1_default_foot_pos_FR_z, a1_default_foot_pos_RL_z,
+            a1_default_foot_pos_RR_z;
 
-        double q_weights_0, q_weights_1, q_weights_2, q_weights_3, q_weights_4, q_weights_5, q_weights_6, q_weights_7, q_weights_8, q_weights_9, q_weights_10, q_weights_11, q_weights_12;
+        double q_weights_0, q_weights_1, q_weights_2, q_weights_3, q_weights_4, q_weights_5, q_weights_6, q_weights_7,
+            q_weights_8, q_weights_9, q_weights_10, q_weights_11, q_weights_12;
 
         _nh.param("q_weights_0", q_weights_0, 20.0);
         _nh.param("q_weights_1", q_weights_1, 10.0);
@@ -217,13 +207,11 @@ public:
 
         _nh.param("q_weights_12", q_weights_12, 0.0);
 
-        q_weights << q_weights_0, q_weights_1, q_weights_2,
-                q_weights_3, q_weights_4, q_weights_5,
-                q_weights_6, q_weights_7, q_weights_8,
-                q_weights_9, q_weights_10, q_weights_11,
-                q_weights_12;
+        q_weights << q_weights_0, q_weights_1, q_weights_2, q_weights_3, q_weights_4, q_weights_5, q_weights_6,
+            q_weights_7, q_weights_8, q_weights_9, q_weights_10, q_weights_11, q_weights_12;
 
-        double r_weights_0, r_weights_1, r_weights_2, r_weights_3, r_weights_4, r_weights_5, r_weights_6, r_weights_7, r_weights_8, r_weights_9, r_weights_10, r_weights_11;
+        double r_weights_0, r_weights_1, r_weights_2, r_weights_3, r_weights_4, r_weights_5, r_weights_6, r_weights_7,
+            r_weights_8, r_weights_9, r_weights_10, r_weights_11;
 
         _nh.param("r_weights_0", r_weights_0, 1e-7);
         _nh.param("r_weights_1", r_weights_1, 1e-7);
@@ -241,12 +229,11 @@ public:
         _nh.param("r_weights_10", r_weights_10, 1e-7);
         _nh.param("r_weights_11", r_weights_11, 1e-7);
 
-        r_weights << r_weights_0, r_weights_1, r_weights_2,
-                r_weights_3, r_weights_4, r_weights_5,
-                r_weights_6, r_weights_7, r_weights_8,
-                r_weights_9, r_weights_10, r_weights_11;
+        r_weights << r_weights_0, r_weights_1, r_weights_2, r_weights_3, r_weights_4, r_weights_5, r_weights_6,
+            r_weights_7, r_weights_8, r_weights_9, r_weights_10, r_weights_11;
 
-        double a1_kp_foot_x, a1_kp_foot_y, a1_kp_foot_z, a1_kd_foot_x, a1_kd_foot_y, a1_kd_foot_z, a1_km_foot_x, a1_km_foot_y, a1_km_foot_z;
+        double a1_kp_foot_x, a1_kp_foot_y, a1_kp_foot_z, a1_kd_foot_x, a1_kd_foot_y, a1_kd_foot_z, a1_km_foot_x,
+            a1_km_foot_y, a1_km_foot_z;
 
         _nh.param("a1_kp_foot_x", a1_kp_foot_x, 200.0);
         _nh.param("a1_kp_foot_y", a1_kp_foot_y, 200.0);
@@ -260,14 +247,10 @@ public:
         _nh.param("a1_km_foot_y", a1_km_foot_y, 0.1);
         _nh.param("a1_km_foot_z", a1_km_foot_z, 0.1);
 
-        kp_foot <<
-                a1_kp_foot_x, a1_kp_foot_x, a1_kp_foot_x, a1_kp_foot_x,
-                a1_kp_foot_y, a1_kp_foot_y, a1_kp_foot_y, a1_kp_foot_y,
-                a1_kp_foot_z, a1_kp_foot_z, a1_kp_foot_z, a1_kp_foot_z;
-        kd_foot <<
-                a1_kd_foot_x, a1_kd_foot_x, a1_kd_foot_x, a1_kd_foot_x,
-                a1_kd_foot_y, a1_kd_foot_y, a1_kd_foot_y, a1_kd_foot_y,
-                a1_kd_foot_z, a1_kd_foot_z, a1_kd_foot_z, a1_kd_foot_z;
+        kp_foot << a1_kp_foot_x, a1_kp_foot_x, a1_kp_foot_x, a1_kp_foot_x, a1_kp_foot_y, a1_kp_foot_y, a1_kp_foot_y,
+            a1_kp_foot_y, a1_kp_foot_z, a1_kp_foot_z, a1_kp_foot_z, a1_kp_foot_z;
+        kd_foot << a1_kd_foot_x, a1_kd_foot_x, a1_kd_foot_x, a1_kd_foot_x, a1_kd_foot_y, a1_kd_foot_y, a1_kd_foot_y,
+            a1_kd_foot_y, a1_kd_foot_z, a1_kd_foot_z, a1_kd_foot_z, a1_kd_foot_z;
 
         km_foot = Eigen::Vector3d(a1_km_foot_x, a1_km_foot_y, a1_km_foot_z);
 
@@ -317,23 +300,23 @@ public:
         _nh.param("a1_gait_counter_speed_RL", a1_gait_counter_speed_RL, 1.5);
         _nh.param("a1_gait_counter_speed_RR", a1_gait_counter_speed_RR, 1.5);
 
-        gait_counter_speed
-                << a1_gait_counter_speed_FL, a1_gait_counter_speed_FR, a1_gait_counter_speed_RL, a1_gait_counter_speed_RR;
+        gait_counter_speed << a1_gait_counter_speed_FL, a1_gait_counter_speed_FR, a1_gait_counter_speed_RL,
+            a1_gait_counter_speed_RR;
 
         // _nh.param("a1_hardware_power_level", power_level, 2);
     }
 
-    void gait_counter_reset() {
-        if (gait_type == 1) {
+    void gait_counter_reset()
+    {
+        if (gait_type == 1)
+        {
             gait_counter << 0, 120, 120, 0;
         }
-
-    
     }
 
     // variables
-    int movement_mode;  // 0: standstill, 1: start to locomote
-    int use_terrain_adapt; 
+    int movement_mode; // 0: standstill, 1: start to locomote
+    int use_terrain_adapt;
     double control_dt = MAIN_UPDATE_FREQUENCY / 1000.0;
 
     // period of one gait cycle
@@ -356,8 +339,8 @@ public:
     Eigen::Vector3d root_ang_vel_d;
     Eigen::Vector3d root_ang_vel_d_world;
 
-    Eigen::Matrix<double, MPC_STATE_DIM, 1> mpc_states; // mpc 계산 초기 state
-    Eigen::Matrix<double, MPC_STATE_DIM * PLAN_HORIZON, 1> mpc_states_d; //mpc 계산 desired state
+    Eigen::Matrix<double, MPC_STATE_DIM, 1> mpc_states;                  // mpc 계산 초기 state
+    Eigen::Matrix<double, MPC_STATE_DIM * PLAN_HORIZON, 1> mpc_states_d; // mpc 계산 desired state
 
     // important kinematics constants
     double robot_mass;
@@ -371,7 +354,7 @@ public:
     Eigen::VectorXd r_weights;
 
     // terrain related
-    double terrain_pitch_angle;  // the estimated terrain angle on pitch direction
+    double terrain_pitch_angle; // the estimated terrain angle on pitch direction
 
     // important kinematics variables
     Eigen::Vector3d root_pos;
@@ -395,12 +378,14 @@ public:
     int walking_surface_fit_count;
 
     Eigen::Matrix<double, 3, NUM_LEG> foot_pos_target_world; // in the world frame
-    Eigen::Matrix<double, 3, NUM_LEG> foot_pos_target_abs; // in a frame which centered at the robot frame's origin but parallels to the world frame
+    Eigen::Matrix<double, 3, NUM_LEG>
+        foot_pos_target_abs; // in a frame which centered at the robot frame's origin but parallels to the world frame
     Eigen::Matrix<double, 3, NUM_LEG> foot_pos_target_rel; // in the robot frame
     Eigen::Matrix<double, 3, NUM_LEG> foot_pos_start;
 
     Eigen::Matrix<double, 3, NUM_LEG> foot_pos_world; // in the world frame
-    Eigen::Matrix<double, 3, NUM_LEG> foot_pos_abs; // in a frame which centered at the robot frame's origin but parallels to the world frame
+    Eigen::Matrix<double, 3, NUM_LEG>
+        foot_pos_abs; // in a frame which centered at the robot frame's origin but parallels to the world frame
     Eigen::Matrix<double, 3, NUM_LEG> foot_pos_rel; // in the robot frame
     Eigen::Matrix<double, 3, NUM_LEG> foot_pos_abs_mpc;
     Eigen::Matrix<double, 3, NUM_LEG> foot_pos_rel_last_time;
@@ -412,9 +397,9 @@ public:
     Eigen::Matrix<double, 3, NUM_LEG> foot_vel_rel;
     Eigen::Matrix<double, 12, 12> j_foot;
 
-    bool contacts[NUM_LEG];         // flag to decide leg in the stance/swing mode
-    bool plan_contacts[NUM_LEG];    // planed flag for stance/swing mode
-    bool early_contacts[NUM_LEG];   // true if foot hit objects during swing
+    bool contacts[NUM_LEG];       // flag to decide leg in the stance/swing mode
+    bool plan_contacts[NUM_LEG];  // planed flag for stance/swing mode
+    bool early_contacts[NUM_LEG]; // true if foot hit objects during swing
 
     // controller variables
     double kp_lin_x;
@@ -443,10 +428,9 @@ public:
     Eigen::Vector3d imu_ang_vel;
 
     // state estimation
-    bool estimated_contacts[NUM_LEG];  // true if the estimator thinks the foot has contact
+    bool estimated_contacts[NUM_LEG]; // true if the estimator thinks the foot has contact
     Eigen::Vector3d estimated_root_pos;
     Eigen::Vector3d estimated_root_vel;
-
 
     std::string base_link;
     std::string fl_foot_link;
@@ -461,4 +445,4 @@ public:
     KDL::Chain rr_chain;
 };
 
-#endif 
+#endif

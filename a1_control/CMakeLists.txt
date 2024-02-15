@@ -25,9 +25,6 @@ catkin_package(
  DEPENDS system_lib
 )
 
-
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${orocos_kdl_INCLUDE_DIRS} 
@@ -36,7 +33,7 @@ include_directories(
   ${qpOASES_DIR}/include
   include
 )
-# # Declare a C++ library
+
 add_library(${PROJECT_NAME}
   src/Ekf.cpp
   src/Utils.cpp

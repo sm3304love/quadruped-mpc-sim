@@ -3,45 +3,44 @@
 
 // std
 #include <Eigen/Dense>
-#include <memory>
-#include <set>
 #include <chrono>
-#include <map>
-#include <mutex>
-#include <thread>
 #include <condition_variable>
 #include <fstream>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <set>
+#include <thread>
 
 // ROS
-#include <ros/ros.h>
-#include <sensor_msgs/Joy.h>
-#include <sensor_msgs/Imu.h>
-#include <sensor_msgs/JointState.h>
-#include <nav_msgs/Odometry.h>
-#include <geometry_msgs/PoseStamped.h>
-#include <geometry_msgs/TwistStamped.h>
-#include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/PoseArray.h>
+#include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/TwistStamped.h>
 #include <geometry_msgs/Vector3Stamped.h>
 #include <geometry_msgs/WrenchStamped.h>
-#include <geometry_msgs/PointStamped.h>
-#include <unitree_legged_msgs/MotorState.h>
-#include <unitree_legged_msgs/MotorCmd.h>
+#include <nav_msgs/Odometry.h>
+#include <ros/ros.h>
+#include <sensor_msgs/Imu.h>
+#include <sensor_msgs/JointState.h>
+#include <sensor_msgs/Joy.h>
 #include <unitree_legged_msgs/LowCmd.h>
+#include <unitree_legged_msgs/MotorCmd.h>
+#include <unitree_legged_msgs/MotorState.h>
 #include <unitree_legged_msgs/RobotCmd.h>
-// #include <gazebo_msgs/ModelStates.h>
 
 // control parameters
-#include "a1_control/Params.h"
-#include "a1_control/RobotState.h"
-#include "a1_control/RobotController.h"
 #include "a1_control/Ekf.h"
-#include "a1_control/Utils.h"
 #include "a1_control/Filter.h"
+#include "a1_control/Params.h"
+#include "a1_control/RobotController.h"
+#include "a1_control/RobotState.h"
+#include "a1_control/Utils.h"
 
-
-class QuadrupedROS {
-public:
+class QuadrupedROS
+{
+  public:
     QuadrupedROS(ros::NodeHandle &_nh);
 
     bool update_foot_forces_grf(double dt);
@@ -88,8 +87,7 @@ public:
 
     void Robot_command_callback(const unitree_legged_msgs::RobotCmd::ConstPtr &cmd_msg);
 
-
-private:
+  private:
     ros::NodeHandle nh;
 
     // 0,  1,  2: FL_hip, FL_thigh, FL_calf
@@ -109,7 +107,7 @@ private:
 
     // debug estimation
     ros::Publisher pub_estimated_pose;
-    
+
     // following cade is also in VILEOM
     // following are some parameters that defines the transformation between IMU frame(b) and robot body frame(r)
     Eigen::Vector3d p_br;
@@ -151,9 +149,6 @@ private:
     float cmd_pitch_vel = 0.0;
     float cmd_yaw_vel = 0.0;
     float cmd_body_height = 0.0;
-
-
 };
 
-
-#endif //ROSInterface_H
+#endif // ROSInterface_H
